@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartCart - Product Details</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .product-details {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .product-details img {
+            width: 300px;
+            height: 250px;
+            object-fit: contain;
+        }
+
+        h2 {
+            color: #222;
+        }
+
+        p {
+            color: #555;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .price {
+            color: #198754;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="product-details">
+
+        <h2>{{ product.name }}</h2>
+
+        {% if product.image %}
+            <img
+                src="{{ url_for('static', filename='uploads/product_images/' + product.image) }}"
+                alt="{{ product.name }}"
+            >
+        {% endif %}
+
+        <p>
+            <strong>Description:</strong><br>
+            {{ product.description or 'No description available.' }}
+        </p>
+
+        <p>
+            <strong>Category:</strong>
+            {{ product.category }}
+        </p>
+
+        <p class="price">
+            ₹{{ product.price }}
+        </p>
+
+        <a href="/user/products" class="back-btn">
+            Back to Products
+        </a>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+# Virtual environment
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Sensitive credentials
+config.py
+.env
+
+# Uploaded files
+static/uploads/
+
+# IDE files
+.vscode/
+.DS_Store

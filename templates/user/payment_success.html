@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartCart - Payment Response</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .success-box {
+            background: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: green;
+        }
+
+        p {
+            margin: 15px 0;
+            word-break: break-word;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #3399cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="success-box">
+
+        <h1>🎉 Payment Response Received!</h1>
+
+        <p>Your payment response has been received by SmartCart.</p>
+
+        <hr>
+
+        <p>
+            <strong>Payment ID:</strong><br>
+            {{ payment_id }}
+        </p>
+
+        <p>
+            <strong>Order ID:</strong><br>
+            {{ order_id }}
+        </p>
+
+        <a href="/user/products">Continue Shopping</a>
+
+    </div>
+
+</body>
+
+</html>

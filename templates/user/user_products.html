@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartCart - All Products</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #222;
+        }
+
+        .cart-navigation {
+            text-align: right;
+            margin: 20px;
+        }
+
+        .cart-navigation a {
+            color: #007bff;
+            font-size: 18px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        input, select, button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .product-card {
+            width: 220px;
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: contain;
+        }
+
+        .product-card h3 {
+            color: #222;
+        }
+
+        .product-card p {
+            color: #555;
+        }
+
+        .view-btn {
+            display: inline-block;
+            padding: 9px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .view-btn:hover {
+            background: #0056b3;
+        }
+
+        .add-cart-btn {
+            margin-top: 10px;
+            padding: 9px 15px;
+            background: #198754;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .add-cart-btn:hover {
+            background: #146c43;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .message {
+            text-align: center;
+            margin: 15px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Page Heading -->
+    <h2>SmartCart - All Products</h2>
+
+    <!-- Cart Navigation -->
+    <div class="cart-navigation">
+
+        <a href="/user/cart">
+            🛒 My Cart (
+            <span id="cart-count">
+                {{ session.get('cart', {}).values()|sum (attribute='quantity')}}
+            </span>
+            )
+        </a>
+
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <p class="message">{{ message }}</p>
+
+        {% endfor %}
+
+    {% endwith %}
+
+
+    <!-- Search and Category Filter -->
+    <div class="filter-container">
+
+        <form method="GET" action="/user/products">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search products..."
+                value="{{ request.args.get('search', '') }}"
+            >
+
+            <select name="category">
+
+                <option value="">All Categories</option>
+
+                {% for cat in categories %}
+
+                    <option
+                        value="{{ cat.category }}"
+                        {% if request.args.get('category') == cat.category %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ cat.category }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+                Search / Filter
+            </button>
+
+            <a href="/user/products">
+                Clear
+            </a>
+
+        </form>
+
+    </div>
+
+    <hr>
+
+
+    <!-- Product Cards -->
+    <div class="product-container">
+
+        {% for product in products %}
+
+            <div class="product-card">
+
+                <!-- Product Image -->
+                {% if product.image %}
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/product_images/' + product.image) }}"
+                        alt="{{ product.name }}"
+                    >
+
+                {% endif %}
+
+
+                <!-- Product Name -->
+                <h3>{{ product.name }}</h3>
+
+
+                <!-- Category -->
+                <p>{{ product.category }}</p>
+
+
+                <!-- Price -->
+                <p>
+                    <strong>₹{{ product.price }}</strong>
+                </p>
+
+
+                <!-- View Details -->
+                <a
+                    class="view-btn"
+                    href="/user/product/{{ product.product_id }}"
+                >
+                    View Details
+                </a>
+
+
+                <!-- Add to Cart -->
+                <button
+                    type="button"
+                    class="add-cart-btn"
+                    data-product-id="{{ product.product_id }}"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+        {% else %}
+
+            <h3>No products found!</h3>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- Back to Dashboard -->
+    <a class="back-link" href="/user-dashboard">
+        Back to Dashboard
+    </a>
+
+
+    <!-- AJAX JavaScript -->
+    <script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+    const cartButtons = document.querySelectorAll('.add-cart-btn');
+
+    cartButtons.forEach(button => {
+
+        button.addEventListener('click', function () {
+
+            const productId = this.dataset.productId;
+
+            fetch(`/user/add-to-cart/${productId}`, {
+                method: 'POST'
+            })
+
+            .then(async response => {
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Request failed');
+                }
+
+                return data;
+
+            })
+
+            .then(data => {
+
+                if (data.success) {
+
+                    document.getElementById('cart-count').textContent =
+                        data.cart_count;
+
+                    alert(data.message);
+
+                }
+
+            })
+
+            .catch(error => {
+
+                alert(error.message);
+
+                if (error.message === 'Please login first!') {
+                    window.location.href = '/user-login';
+                }
+
+                console.error(error);
+
+            });
+
+        });
+
+    });
+
+});
+
+</script>
+</body>
+
+</html>

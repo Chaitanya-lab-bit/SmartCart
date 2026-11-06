@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCart - User Registration</title>
+</head>
+<body>
+
+```
+<h2>User Registration</h2>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endwith %}
+
+<form method="POST" action="/user-register">
+
+    <label>Name:</label><br>
+    <input type="text" name="name" required>
+    <br><br>
+
+    <label>Email:</label><br>
+    <input type="email" name="email" required>
+    <br><br>
+
+    <label>Password:</label><br>
+    <input type="password" name="password" required>
+    <br><br>
+
+    <button type="submit">Register</button>
+
+</form>
+
+<br>
+
+<a href="/user-login">Already have an account? Login</a>
+```
+
+</body>
+</html>

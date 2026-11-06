@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCart - My Cart</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .cart-item {
+            background: white;
+            padding: 20px;
+            margin: 15px auto;
+            max-width: 650px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cart-item img {
+            width: 120px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .quantity button {
+            padding: 5px 12px;
+            cursor: pointer;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .total {
+            text-align: center;
+            font-size: 24px;
+            color: green;
+            margin-top: 25px;
+        }
+
+        .address-box {
+            background: white;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .address-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .address-box input,
+        .address-box textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 14px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 17px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .pay-btn:hover {
+            background: #218838;
+        }
+
+        .continue {
+            text-align: center;
+            margin: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>🛒 My Shopping Cart</h2>
+
+    {% if cart %}
+
+        {% for pid, item in cart.items() %}
+
+            <div class="cart-item">
+
+                <img
+                    src="{{ url_for('static', filename='uploads/product_images/' + item.image) }}"
+                    alt="{{ item.name }}"
+                >
+
+                <div>
+
+                    <h3>{{ item.name }}</h3>
+
+                    <p>Price: ₹{{ "%.2f"|format(item.price) }}</p>
+
+                    <p>Quantity: {{ item.quantity }}</p>
+
+                    <p>
+                        Item Total:
+                        ₹{{ "%.2f"|format(item.price * item.quantity) }}
+                    </p>
+
+                    <div class="quantity">
+
+                        <a href="/user/cart/decrease/{{ pid }}">
+                            <button type="button">−</button>
+                        </a>
+
+                        <a href="/user/cart/increase/{{ pid }}">
+                            <button type="button">+</button>
+                        </a>
+
+                    </div>
+
+                    <br>
+
+                    <form method="POST"
+                          action="/user/cart/remove/{{ pid }}">
+
+                        <button class="remove-btn" type="submit">
+                            Remove
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+        <div class="total">
+
+            <strong>
+                Grand Total: ₹{{ "%.2f"|format(grand_total) }}
+            </strong>
+
+        </div>
+
+        <!-- Delivery Address -->
+
+        <div class="address-box">
+
+            <h2>📍 Delivery Address</h2>
+
+            <form method="POST" action="/user/checkout-address">
+
+                <input type="text"
+                       name="full_name"
+                       placeholder="Full Name"
+                       required>
+
+                <input type="tel"
+                       name="mobile"
+                       placeholder="Mobile Number"
+                       pattern="[0-9]{10}"
+                       maxlength="10"
+                       required>
+
+                <textarea name="address"
+                          placeholder="House No, Street, Area"
+                          rows="3"
+                          required></textarea>
+
+                <input type="text"
+                       name="city"
+                       placeholder="City"
+                       required>
+
+                <input type="text"
+                       name="state"
+                       placeholder="State"
+                       required>
+
+                <input type="text"
+                       name="pincode"
+                       placeholder="PIN Code"
+                       pattern="[0-9]{6}"
+                       maxlength="6"
+                       required>
+
+                <button type="submit" class="pay-btn">
+                    Proceed to Payment 💳
+                </button>
+
+            </form>
+
+        </div>
+
+    {% else %}
+
+        <h3 style="text-align:center;">
+            Your cart is empty!
+        </h3>
+
+    {% endif %}
+
+    <div class="continue">
+        <a href="/user/products">Continue Shopping</a>
+    </div>
+
+</body>
+
+</html>

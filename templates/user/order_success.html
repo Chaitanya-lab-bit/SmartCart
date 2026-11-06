@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCart - Order Successful</title>
+
+```
+<style> 
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .success-box {
+        background: white;
+        max-width: 500px;
+        margin: auto;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .success-icon {
+        font-size: 65px;
+        color: green;
+    }
+
+    h2 {
+        color: #222;
+    }
+
+    p {
+        color: #555;
+        line-height: 1.7;
+    }
+
+    .btn {
+        display: inline-block;
+        background: #28a745;
+        color: white;
+        padding: 12px 22px;
+        margin: 10px;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+
+    .btn:hover {
+        background: #218838;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<div class="success-box">
+
+    <div class="success-icon">✔</div>
+
+    <h2>Order Placed Successfully!</h2>
+
+    <p>Thank you for shopping with SmartCart.</p>
+
+    <p>Your Order ID: <strong>#{{ order.order_id }}</strong></p>
+
+    <p>Payment Status: <strong>{{ order.payment_status }}</strong></p>
+    <a href="{{ url_for('download_invoice', order_id=order.order_id) }}"
+       class="btn">
+        Download Invoice PDF
+    </a>
+
+    <a href="{{ url_for('my_orders') }}" class="btn">
+        View My Orders
+    </a>
+
+    <a href="{{ url_for('user_products') }}" class="btn">
+        Continue Shopping
+    </a>
+
+</div>
+```
+
+</body>
+</html>

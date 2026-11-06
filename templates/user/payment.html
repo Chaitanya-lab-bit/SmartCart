@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartCart - Secure Payment</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .payment-box {
+            background: white;
+            max-width: 450px;
+            margin: auto;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #222;
+        }
+
+        .amount {
+            font-size: 28px;
+            color: green;
+            font-weight: bold;
+            margin: 25px 0;
+        }
+
+        .pay-btn {
+            background: #3399cc;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .pay-btn:hover {
+            background: #287fa8;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="payment-box">
+
+        <h2>🛒 SmartCart</h2>
+
+        <h3>Secure Payment</h3>
+
+        <p>Complete your order by making payment.</p>
+
+        <div class="amount">
+            ₹{{ "%.2f"|format(amount / 100) }}
+        </div>
+
+        <button
+            class="pay-btn"
+            id="payButton"
+            data-key-id="{{ key_id }}"
+            data-amount="{{ amount }}"
+            data-order-id="{{ order_id }}">
+
+            Pay Now 💳
+
+        </button>
+
+    </div>
+
+    <!-- Razorpay Checkout Script -->
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+
+        const payButton = document.getElementById("payButton");
+
+        payButton.onclick = function () {
+
+            const keyId = payButton.dataset.keyId;
+
+            const amount = Number(payButton.dataset.amount);
+
+            const orderId = payButton.dataset.orderId;
+
+            var options = {
+
+                "key": keyId,
+
+                "amount": amount,
+
+                "currency": "INR",
+
+                "name": "SmartCart",
+
+                "description": "Order Payment",
+
+                "order_id": orderId,
+
+                "handler": function (response) {
+
+                    // Create a form
+                    var form = document.createElement("form");
+
+                    form.method = "POST";
+
+                    form.action = "/verify-payment";
+
+                    // Razorpay payment response
+                    var fields = {
+
+                        razorpay_payment_id:
+                            response.razorpay_payment_id,
+
+                        razorpay_order_id:
+                            response.razorpay_order_id,
+
+                        razorpay_signature:
+                            response.razorpay_signature
+
+                    };
+
+                    // Add hidden input fields
+                    for (var name in fields) {
+
+                        var input = document.createElement("input");
+
+                        input.type = "hidden";
+
+                        input.name = name;
+
+                        input.value = fields[name];
+
+                        form.appendChild(input);
+
+                    }
+
+                    // Submit details to Flask
+                    document.body.appendChild(form);
+
+                    form.submit();
+
+                },
+
+                "theme": {
+
+                    "color": "#3399cc"
+
+                }
+
+            };
+
+            var paymentObject = new Razorpay(options);
+
+            paymentObject.open();
+
+        };
+
+    </script>
+
+</body>
+
+</html>

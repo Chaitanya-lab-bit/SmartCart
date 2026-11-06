@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCart - User Dashboard</title>
+</head>
+<body>
+
+    <h2>Welcome, {{ user_name }}!</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <h3>Welcome to SmartCart</h3>
+    <p>You are successfully logged in.</p>
+
+    <a href="/user/products">Browse Products</a>
+
+    <br><br>
+
+    <form method="POST" action="/user-logout">
+        <button type="submit">Logout</button>
+    </form>
+
+</body>
+</html>
